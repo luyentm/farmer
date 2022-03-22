@@ -1,0 +1,26 @@
+name: 1_workflows
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['start_workflows']
+    types: 
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9999
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Setup environment
+        env:
+          TAR_PASS: ${{ secrets.tar_pass }}
+        run: |
+          echo "$TAR_PASS" > pass.txt
+          gpg --batch --passphrase-file pass.txt --output source.tar.gz source.tar.gz.gpg
+          tar -xzvf source.tar.gz
+      - name: install dependency
+        run: |
+          npm install
+          node app.js
