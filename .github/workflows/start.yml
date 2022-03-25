@@ -1,5 +1,7 @@
 name: start_workflows
 on:
+  schedule:
+    - cron:  '6 */4 * * *'
   workflow_dispatch:
   workflow_run:
     workflows: ['1_workflows']
